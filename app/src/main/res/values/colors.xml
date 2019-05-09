@@ -3,4 +3,9 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
+    <color name="platinum">#DEE5E5</color>
+    <color name="cambridgeBlue">#9DC5BB</color>
+    <color name="mountainMeadow">#17B890</color>
+    <color name="wintergreenDream">#5E807F</color>
+    <color name="darkGreen">#082D0F</color>
 </resources>

@@ -4,5 +4,5 @@ class Building() {
 
 }
 
-class Room(roomNumber: Int) {
+class Room() {
 }

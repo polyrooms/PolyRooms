@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">PolyRooms</string>
+    <string name="polyrooms">PolyRooms</string>
+    <string name="reserve_a_room">Reserve a room</string>
+    <string name="select_a_time">Select a Time</string>
+    <string name="select_a_date">Select a Date</string>
+    <string name="find_a_room">Find a Room</string>
+    <string name="report_an_issue">Report an Issue</string>
+    <string name="current_reservations">Current Reservations</string>
+    <string name="title_activity_maps2">Map</string>
 </resources>

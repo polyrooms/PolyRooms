@@ -5,7 +5,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.database.*
-import kotlin.jvm.internal.FunctionReference
 
 enum class Day {
     SUN, MON, TUE, WED, THU, FRI, SAT

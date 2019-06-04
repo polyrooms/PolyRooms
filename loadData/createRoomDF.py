@@ -24,6 +24,19 @@ icsHref = lhTable.xpath('//tr/td//a/@href')
 icsRegex = re.compile(r'\/ics\/location.*')
 icsHref = list(filter(icsRegex.match, icsHref))
 pandasTable["ICS"] = icsHref
+# get building names
+buildingNames = []
+buildingRegex  = re.compile(r'(.+?)[-\s].*')
+for index, row in pandasTable.iterrows():
+    text = row.Listing
+    m = buildingRegex.search(text)
+    if m:
+        found = m.group(1)
+        buildingNames.append(found)
+
+# add building names
+pandasTable.insert(loc = 1, column = 'Building', value = buildingNames, allow_duplicates = True)
+
 # drop unnecessary columns
 pandasTable = pandasTable.drop(columns = ['Schedule', 'Loc Cap Calc', 'Util Fact', 'Opt Fact'])
 

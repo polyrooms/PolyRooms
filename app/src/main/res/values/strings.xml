@@ -1,3 +1,21 @@
 <resources>
     <string name="app_name">PolyRooms</string>
+    <string name="polyrooms">PolyRooms</string>
+    <string name="reserve_a_room">Reserve a room</string>
+    <string name="select_a_time">Select a Time</string>
+    <string name="select_a_date">Select a Date</string>
+    <string name="find_a_room">Find a Room</string>
+    <string name="report_an_issue">Report an Issue</string>
+    <string name="current_reservations">Current Reservations</string>
+    <string name="title_activity_maps2">Map</string>
+    <string name="sunday">Sunday</string>
+    <string name="monday">Monday</string>
+    <string name="tuesday">Tuesday</string>
+    <string name="wednesday">Wednesday</string>
+    <string name="thursday">Thursday</string>
+    <string name="friday">Friday</string>
+    <string name="saturday">Saturday</string>
+    <string name="building_number">Building Number</string>
+    <string name="room_number">Room Number</string>
+    <string name="give_a_detailed_description_of_the_room_issue">Give a detailed description of the room issue</string>
 </resources>

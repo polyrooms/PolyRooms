@@ -134,6 +134,7 @@ class MainActivity : AppCompatActivity() {
 
         else {
             var time = Time(Day.SUN, 0)
+
             if (gday.equals("Sunday")) {
                 time = Time(Day.SUN, ghour)
             }

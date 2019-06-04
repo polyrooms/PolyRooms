@@ -8,4 +8,11 @@
     <string name="report_an_issue">Report an Issue</string>
     <string name="current_reservations">Current Reservations</string>
     <string name="title_activity_maps2">Map</string>
+    <string name="sunday">Sunday</string>
+    <string name="monday">Monday</string>
+    <string name="tuesday">Tuesday</string>
+    <string name="wednesday">Wednesday</string>
+    <string name="thursday">Thursday</string>
+    <string name="friday">Friday</string>
+    <string name="saturday">Saturday</string>
 </resources>

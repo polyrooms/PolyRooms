@@ -6,15 +6,17 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.support.annotation.RequiresApi
-import android.support.v4.content.ContextCompat
-import android.support.v7.app.AppCompatActivity
+import android.view.MenuItem
 import android.view.View
 import android.view.View.VISIBLE
 import android.view.Window
 import android.view.WindowManager
 import android.widget.*
+import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.activity_main.*
+import java.io.Serializable
 import java.time.LocalDateTime
 import java.util.*
 @RequiresApi(Build.VERSION_CODES.O) //required for day of week spinner
@@ -41,34 +43,6 @@ class MainActivity : AppCompatActivity() {
 
             override fun onTick(p0: Long) {}
         }.start()
-
-
-        val days = arrayOf("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday")
-
-        val adapter = ArrayAdapter(
-            this,
-            R.layout.default_spinner_item,
-            days
-        )
-
-        val day = LocalDateTime.now().dayOfWeek.value
-
-        // Set the drop down view resource
-        adapter.setDropDownViewResource(R.layout.spinner_item)
-
-       /* spinner.adapter = adapter;
-
-        spinner.setSelection(day)
-
-        spinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener{
-            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long){
-                gday = spinner.getItemAtPosition(position).toString()
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>){
-                // nothing
-            }
-        }*/
     }
 
     private fun startAnimation() {
@@ -116,16 +90,76 @@ class MainActivity : AppCompatActivity() {
         tpd.show()
     }
 
+    fun clickDate(view: View) {
+        var popup: PopupMenu? = null;
+        popup = PopupMenu(this, view)
+        popup.inflate(R.menu.menu_items)
+
+        popup.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener { item: MenuItem? ->
+
+            when (item!!.itemId) {
+                R.id.Sun -> {
+                    gday = item.title.toString()
+                }
+                R.id.Mon -> {
+                    gday = item.title.toString()
+                }
+                R.id.Tue -> {
+                    gday = item.title.toString()
+                }
+                R.id.Wed -> {
+                    gday = item.title.toString()
+                }
+                R.id.Thur -> {
+                    gday = item.title.toString()
+                }
+                R.id.Fri -> {
+                    gday = item.title.toString()
+                }
+                R.id.Sat -> {
+                    gday = item.title.toString()
+                }
+            }
+            dateButton.text = this.gday
+            true
+        })
+
+        popup.show()
+    }
+
     fun clickFind(view: View) {
         if (ghour == -1){
             Toast.makeText(this, "You must select a time", Toast.LENGTH_LONG).show()
         }
 
         else {
+            var time = Time(Day.SUN, 0)
+            if (gday.equals("Sunday")) {
+                time = Time(Day.SUN, ghour)
+            }
+            else if (gday.equals("Monday")) {
+                time = Time(Day.MON, ghour)
+            }
+            else if (gday.equals("Tuesday")) {
+                time = Time(Day.TUE, ghour)
+            }
+            else if (gday.equals("Wednesday")) {
+                time = Time(Day.WED, ghour)
+            }
+            else if (gday.equals("Thursday")) {
+                time = Time(Day.THU, ghour)
+            }
+            else if (gday.equals("Friday")) {
+                time = Time(Day.FRI, ghour)
+            }
+            else if (gday.equals("Saturday")) {
+                time = Time(Day.SAT, ghour)
+            }
+            else {
+                //wig out man
+            }
             val intent = Intent(this, MapsActivity::class.java)
-            intent.putExtra("hour", ghour)
-            intent.putExtra("day", gday)
-            intent.putExtra("min", gmin)
+            intent.putExtra("time", time as Serializable)
             startActivity(intent)
         }
     }
@@ -163,4 +197,3 @@ class MainActivity : AppCompatActivity() {
         }
     }
 }
-

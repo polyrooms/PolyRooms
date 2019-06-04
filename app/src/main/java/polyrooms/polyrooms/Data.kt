@@ -13,6 +13,8 @@ enum class Day {
 
 data class EmptyRoom(val roomNumber : Int)
 
+data class Report(val report : String) : Serializable
+
 // contains time intervals in which a room is empty
 data class Room(val roomNumber : Int, val emptyIntervals : List<TimeInterval>, val reservations : List<Reservation>)
 data class RoomResponse(val roomNumber : Int = -1,

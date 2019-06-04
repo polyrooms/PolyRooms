@@ -3,7 +3,6 @@ package polyrooms.polyrooms
 import android.animation.Animator
 import android.app.TimePickerDialog
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.MenuItem
@@ -12,14 +11,11 @@ import android.view.View.VISIBLE
 import android.view.Window
 import android.view.WindowManager
 import android.widget.*
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.Serializable
-import java.time.LocalDateTime
 import java.util.*
-@RequiresApi(Build.VERSION_CODES.O) //required for day of week spinner
 
 class MainActivity : AppCompatActivity() {
 
@@ -128,8 +124,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun clickFind(view: View) {
-        if (ghour == -1){
+        if (ghour == -1) {
             Toast.makeText(this, "You must select a time", Toast.LENGTH_LONG).show()
+        }
+
+        else if (gday.equals("null")) {
+            Toast.makeText(this, "You must select a day", Toast.LENGTH_LONG).show()
         }
 
         else {
@@ -179,8 +179,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun convertH(hour: Int): Int {
-        if (hour > 12){
+        if (hour > 12) {
             return hour - 12
+        }
+        else if (hour == 0) {
+            return hour + 12
         }
         else {
             return hour

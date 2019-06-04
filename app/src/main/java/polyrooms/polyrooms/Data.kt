@@ -29,7 +29,7 @@ fun RoomResponse.mapToEmptyRoom() : EmptyRoom {
     return EmptyRoom(roomNumber)
 }
 
-data class Building(val buildingNumber : Int, val rooms : List<EmptyRoom>)
+data class Building(val buildingNumber : Int, val rooms : List<EmptyRoom>) : Serializable
 data class BuildingResponse(val buildingNumber : Int = -1,
                             val rooms : List<RoomResponse>
                             = List(0, {a : Int -> RoomResponse(-1)}))

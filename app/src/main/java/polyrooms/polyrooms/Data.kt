@@ -5,12 +5,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.database.*
+import java.io.Serializable
 
 enum class Day {
     SUN, MON, TUE, WED, THU, FRI, SAT
 }
 
 data class EmptyRoom(val roomNumber : Int)
+
+data class Report(val report : String) : Serializable
 
 // contains time intervals in which a room is empty
 data class Room(val roomNumber : Int, val emptyIntervals : List<TimeInterval>, val reservations : List<Reservation>)
@@ -28,13 +31,13 @@ fun RoomResponse.mapToEmptyRoom() : EmptyRoom {
     return EmptyRoom(roomNumber)
 }
 
-data class Building(val buildingNumber : Int, val rooms : List<EmptyRoom>)
+data class Building(val buildingNumber : Int, val rooms : List<EmptyRoom>) : Serializable
 data class BuildingResponse(val buildingNumber : Int = -1,
                             val rooms : List<RoomResponse>
                             = List(0, {a : Int -> RoomResponse(-1)}))
 
 // hour ranges from 0 to 23
-data class Time(val day : Day, val hour : Int)
+data class Time(val day : Day, val hour : Int) : Serializable
 
 fun Time.mapToTimeResponse() : TimeResponse {
     return when (day) {

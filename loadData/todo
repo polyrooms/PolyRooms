@@ -1,10 +1,6 @@
-{ "buildings" : [ { "buildingNumber" : 1, "rooms" : [ { "emptyIntervals" : [ { "finish" : { "day" : 0, "hour" : 3 }, "start" : { "day" : 0, "hour" : 1 } } ], "reservations" : { "-Lg5j7s0xLAqbqsiIM_N" : { "interval" : { "finish" : { "day" : 1, "hour" : 12 }, "start" : { "day" : 1, "hour" : 8 } } } }, "roomNumber" : 1 } ] } ] }
-
-1. create buildings class: attrs: 
-	building number int
-	rooms list<room>
-2. create rooms class: attrs:
-	emptyIntervals list<emtpy interval objects>
-3. create emptyInterval class: attrs:
-	finish dict {day, hour}
-	start dict {day, hour}
+{ "buildings" : [ { 
+"buildingNumber" : 1, 
+"rooms" : [ { 
+    "emptyIntervals" : [ { "finish" : { "day" : 0, "hour" : 3 }, "start" : { "day" : 0, "hour" : 1 } } ], 
+    "reservations" : { "-Lg5j7s0xLAqbqsiIM_N" : { "interval" : { "finish" : { "day" : 1, "hour" : 12 }, "start" : { "day" : 1, "hour" : 8 } } } }, 
+    "roomNumber" : 1 } ] } ] }

@@ -61,8 +61,7 @@ class MapsActivity : AppCompatActivity() {
         val iconFactory = IconFactory.getInstance(this)
         val greenMarker = iconFactory.fromResource(R.drawable.green_marker)
         val redMarker = iconFactory.fromResource(R.drawable.red_marker)
-        val buildingsInfo = BuildingsInfo()
-        val coordinates = buildingsInfo.getCoordinates()
+        val coordinates = BuildingsInfo.getCoordinates()
 
         coordinates.forEach {
             (buildingNum, coordinates) -> mapboxMap.addMarker(MarkerOptions()

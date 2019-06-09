@@ -1,6 +1,15 @@
 package polyrooms.polyrooms
+/*
+ *
+ *  This class implements the singleton design pattern.
+ *  Only one BuildingsInfo object is ever needed.
+ *  In Kotlin, a singleton is declared with the `object` keyword.
+ *  Reference: https://kotlinlang.org/docs/reference/object-declarations.html#object-declarations
+ *
+ */
 
-class BuildingsInfo {
+object BuildingsInfo {
+
     private val buildingNums = listOf<Int>(2, 3, 5, 6, 8, 10, 11, 13, 14, 20, 21, 22, 24, 26, 33, 34, 35, 38,
             41, 42, 43, 44, 45, 52, 53, 65, 180, 186, 192)
 

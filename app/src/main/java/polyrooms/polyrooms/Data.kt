@@ -14,6 +14,11 @@ enum class Day {
 data class EmptyRoom(val roomNumber : String)
 
 data class Report(val report : String) : Serializable
+data class ReportResponse(val report : String = "")
+
+fun Report.mapToReportResponse() : ReportResponse {
+    return ReportResponse(report)
+}
 
 // contains time intervals in which a room is empty
 data class Room(val roomNumber : String, val emptyIntervals : List<TimeInterval>, val reservations : List<Reservation>)
@@ -149,6 +154,34 @@ fun addReservationToRoom(buildingNumber : String, roomNumber : String, reservati
 
             val newID = reservationsRef?.push()?.key.toString()
             reservationsRef?.child(newID)?.setValue(reservation.mapToReservationResponse())
+        }
+
+        override fun onCancelled(p0: DatabaseError) {
+            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        }
+    })
+}
+
+fun reportRoom(buildingNumber : String, roomNumber : String, report : Report) {
+    val db = FirebaseDatabase.getInstance()
+    val buildings = db.getReference("buildings")
+    buildings.addListenerForSingleValueEvent(object : ValueEventListener {
+        override fun onDataChange(p0: DataSnapshot) {
+            var reservationsRef : DatabaseReference? = null
+            // finds the room that is queried
+            for (buildingData in p0.children) {
+                if (buildingData.child("buildingNumber").value == buildingNumber) {
+                    val roomsData = buildingData.child("rooms")
+                    for (roomData in roomsData.children) {
+                        if (roomData.child("roomNumber").value == roomNumber) {
+                            reservationsRef = roomData.child("reports").ref
+                        }
+                    }
+                }
+            }
+
+            val newID = reservationsRef?.push()?.key.toString()
+            reservationsRef?.child(newID)?.setValue(report.mapToReportResponse())
         }
 
         override fun onCancelled(p0: DatabaseError) {

@@ -30,6 +30,9 @@ class DatabaseExampleActivity : AppCompatActivity() {
         // Adding a reservation to a room
         addReservationToRoom("1", "1",
                 Reservation(TimeInterval(Time(Day.MON, 8), Time(Day.MON, 12))))
+
+        // Reporting a room
+        reportRoom("1", "1", Report("Room is not accessible"))
     }
 
     fun queryCallback(room : Room?) {

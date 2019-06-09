@@ -21,25 +21,38 @@
         android:textSize="40sp"
         android:textColor="@color/platinum"/>
 
+    <TextView
+        android:id="@+id/information"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="5dp"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/intro_report"
+        android:textSize="25sp"
+        android:textColor="@color/colorSplashText"/>
+
     <EditText
+        android:id="@+id/buildingNum"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/platinum"
         android:hint="@string/building_number"
-        android:textColor="@color/platinum"
-        android:inputType="number" />
+        android:textColor="@color/platinum" />
+
 
     <EditText
+        android:id="@+id/roomNum"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
         android:backgroundTint="@color/platinum"
         android:hint="@string/room_number"
-        android:inputType="number"
         android:textColor="@color/platinum" />
 
     <EditText
+        android:id="@+id/descrpition"
         android:layout_width="fill_parent"
         android:layout_height="150dp"
         android:layout_marginBottom="10dp"
@@ -62,7 +75,8 @@
         android:elevation="4dp"
         android:paddingLeft="70dp"
         android:paddingRight="70dp"
-        android:text="Submit"/>
+        android:text="Submit"
+        android:onClick="onSubmit"/>
 
 
 </LinearLayout>

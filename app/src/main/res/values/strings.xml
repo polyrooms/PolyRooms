@@ -18,4 +18,7 @@
     <string name="building_number">Building Number</string>
     <string name="room_number">Room Number</string>
     <string name="give_a_detailed_description_of_the_room_issue">Give a detailed description of the room issue</string>
+    <string name="intro_report">Feel free to let us know if there was an issue when reserving a room and we will do our best to resolve it.</string>
+    <string name="check_in">Check-In</string>
+    <string name="cancel">Cancel</string>
 </resources>

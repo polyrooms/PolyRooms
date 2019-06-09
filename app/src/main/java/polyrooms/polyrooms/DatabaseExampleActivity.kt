@@ -25,11 +25,14 @@ class DatabaseExampleActivity : AppCompatActivity() {
 
         // Getting information about a room and passing a callback to be executed once that
         // information is retrieved
-        queryRoom(1, 1, ::queryCallback)
+        queryRoom("1", "1", ::queryCallback)
 
         // Adding a reservation to a room
-        addReservationToRoom(1, 1,
+        addReservationToRoom("1", "1",
                 Reservation(TimeInterval(Time(Day.MON, 8), Time(Day.MON, 12))))
+
+        // Reporting a room
+        reportRoom("1", "1", Report("Room is not accessible"))
     }
 
     fun queryCallback(room : Room?) {

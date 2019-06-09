@@ -23,4 +23,7 @@
     </string>
     <string name="greenMarkerDesc">Marker that implies building has empty room during specified time</string>
     <string name="redMarkerDesc">Marker that implies building has no empty rooms during specified time</string>
+    <string name="intro_report">Feel free to let us know if there was an issue when reserving a room and we will do our best to resolve it.</string>
+    <string name="check_in">Check-In</string>
+    <string name="cancel">Cancel</string>
 </resources>

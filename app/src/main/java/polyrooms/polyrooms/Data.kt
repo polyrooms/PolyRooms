@@ -11,13 +11,13 @@ enum class Day {
     SUN, MON, TUE, WED, THU, FRI, SAT
 }
 
-data class EmptyRoom(val roomNumber : Int)
+data class EmptyRoom(val roomNumber : String)
 
 data class Report(val report : String) : Serializable
 
 // contains time intervals in which a room is empty
-data class Room(val roomNumber : Int, val emptyIntervals : List<TimeInterval>, val reservations : List<Reservation>)
-data class RoomResponse(val roomNumber : Int = -1,
+data class Room(val roomNumber : String, val emptyIntervals : List<TimeInterval>, val reservations : List<Reservation>)
+data class RoomResponse(val roomNumber : String = "",
                         val emptyIntervals : List<TimeIntervalResponse> = List(0, {a -> TimeIntervalResponse(TimeResponse(0, 0), TimeResponse(0, 0))}),
                         val reservations : List<ReservationResponse> = List(0, {a -> ReservationResponse(TimeIntervalResponse(TimeResponse(0, 0), TimeResponse(0, 0))) }))
 
@@ -31,10 +31,10 @@ fun RoomResponse.mapToEmptyRoom() : EmptyRoom {
     return EmptyRoom(roomNumber)
 }
 
-data class Building(val buildingNumber : Int, val rooms : List<EmptyRoom>) : Serializable
-data class BuildingResponse(val buildingNumber : Int = -1,
+data class Building(val buildingNumber : String, val rooms : List<EmptyRoom>) : Serializable
+data class BuildingResponse(val buildingNumber : String = "",
                             val rooms : List<RoomResponse>
-                            = List(0, {a : Int -> RoomResponse(-1)}))
+                            = List(0, {a : Int -> RoomResponse("")}))
 
 // hour ranges from 0 to 23
 data class Time(val day : Day, val hour : Int) : Serializable
@@ -101,17 +101,17 @@ fun ReservationResponse.mapToReservation() : Reservation {
 
 // intended for ReservationActivity for query for information about a particular room
 // after the query completes, the supplied callback is called with the query result as the argument
-fun queryRoom(buildingNumber : Int, roomNumber : Int, callback : (Room?) -> Any) {
+fun queryRoom(buildingNumber : String, roomNumber : String, callback : (Room?) -> Any) {
     val db = FirebaseDatabase.getInstance()
     val buildings = db.getReference("buildings")
     buildings.addListenerForSingleValueEvent(object : ValueEventListener {
         override fun onDataChange(p0: DataSnapshot) {
             // finds the room that is queried
             for (buildingData in p0.children) {
-                if ((buildingData.child("buildingNumber").value as Long).toInt() == buildingNumber) {
+                if (buildingData.child("buildingNumber").value == buildingNumber) {
                     val roomsData = buildingData.child("rooms")
                     for (roomData in roomsData.children) {
-                        if ((roomData.child("roomNumber").value as Long).toInt() == roomNumber) {
+                        if (roomData.child("roomNumber").value == roomNumber) {
                             val roomResponse = roomData.getValue(RoomResponse::class.java)
                             callback(roomResponse?.mapToRoom())
                         }
@@ -129,7 +129,7 @@ fun queryRoom(buildingNumber : Int, roomNumber : Int, callback : (Room?) -> Any)
 // updates room in database with new reservation
 // this does not verify that the reservation fits into the room's empty times/unreserved times -
 // that is the caller's responsibility
-fun addReservationToRoom(buildingNumber : Int, roomNumber : Int, reservation : Reservation) {
+fun addReservationToRoom(buildingNumber : String, roomNumber : String, reservation : Reservation) {
     val db = FirebaseDatabase.getInstance()
     val buildings = db.getReference("buildings")
     buildings.addListenerForSingleValueEvent(object : ValueEventListener {
@@ -137,10 +137,10 @@ fun addReservationToRoom(buildingNumber : Int, roomNumber : Int, reservation : R
             var reservationsRef : DatabaseReference? = null
             // finds the room that is queried
             for (buildingData in p0.children) {
-                if ((buildingData.child("buildingNumber").value as Long).toInt() == buildingNumber) {
+                if (buildingData.child("buildingNumber").value == buildingNumber) {
                     val roomsData = buildingData.child("rooms")
                     for (roomData in roomsData.children) {
-                        if ((roomData.child("roomNumber").value as Long).toInt() == roomNumber) {
+                        if (roomData.child("roomNumber").value == roomNumber) {
                             reservationsRef = roomData.child("reservations").ref
                         }
                     }
@@ -169,11 +169,11 @@ class DataStore : ViewModel(){
             }
 
             val data = dataSnapshot.children.mapNotNull{ buildingData ->
-                var buildingNumber = (buildingData.child("buildingNumber").value as Long).toInt()
+                var buildingNumber = buildingData.child("buildingNumber") as String
                 val roomsData = buildingData.child("rooms")
                 val rooms = ArrayList<RoomResponse>()
                 for (roomData in roomsData.children) {
-                    val roomNumber = (roomData.child("roomNumber").value as Long).toInt()
+                    val roomNumber = roomData.child("roomNumber").value as String
                     val emptyIntervalsData = roomData.child("emptyIntervals")
                     val emptyIntervals = emptyIntervalsData.children.mapNotNull{it.getValue(TimeIntervalResponse::class.java)}
                     println("empty intervals")

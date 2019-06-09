@@ -3,6 +3,7 @@ package polyrooms.polyrooms
 
 import android.animation.Animator
 import android.app.TimePickerDialog
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -17,6 +18,16 @@ import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.Serializable
 import java.util.*
+import android.R.id.edit
+import android.content.SharedPreferences.Editor
+import com.google.gson.Gson
+import android.text.method.TextKeyListener.clear
+import android.R.id.edit
+import android.animation.AnimatorListenerAdapter
+import android.content.SharedPreferences
+
+
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -24,12 +35,39 @@ class MainActivity : AppCompatActivity() {
     var gmin: Int = -1
     var gday: String = "null"
 
+    private var shortAnimationDuration: Int = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN)
         setContentView(R.layout.activity_main)
+
+        val sharedPreferences = getSharedPreferences("production", Context.MODE_PRIVATE)
+
+        //STORE A CUSTOM OBJECT TO SHARED PREFERENCES
+        /*
+        val prefsEditor = sharedPreferences.edit()
+        val gson = Gson()
+        val json = gson.toJson(myObject) // myObject - instance of MyObject
+        prefsEditor.putString("MyObject", json)
+        prefsEditor.commit()
+        */
+
+        //RETRIEVE INSTANCE OF CUSTOM OBJECT
+        /*
+        val gson = Gson()
+        val json = sharedPreferences.getString("MyObject", "")
+        val obj = gson.fromJson<MyObject>(json, MyObject::class.java!!)
+        */
+
+
+        var savedReservation: String = "null"
+        if (sharedPreferences.contains("first_reservation")) {
+            savedReservation = sharedPreferences.getString("first_reservation", "")
+        }
+
         object : CountDownTimer(850, 1000) {
             override fun onFinish() {
                 loadingProgressBarHorizontal.visibility = View.GONE
@@ -40,6 +78,8 @@ class MainActivity : AppCompatActivity() {
 
             override fun onTick(p0: Long) {}
         }.start()
+
+        Toast.makeText(this, savedReservation, Toast.LENGTH_LONG).show()
     }
 
     private fun startAnimation() {
@@ -50,7 +90,7 @@ class MainActivity : AppCompatActivity() {
             duration = 450
         }.setListener(object : Animator.AnimatorListener {
             override fun onAnimationRepeat(p0: Animator?) {
-
+                //nothing
             }
 
             override fun onAnimationEnd(p0: Animator?) {
@@ -58,11 +98,11 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onAnimationCancel(p0: Animator?) {
-
+                //nothing
             }
 
             override fun onAnimationStart(p0: Animator?) {
-
+                //nothing
             }
         })
     }
@@ -71,6 +111,7 @@ class MainActivity : AppCompatActivity() {
         val c = Calendar.getInstance()
         val hour = c.get(Calendar.HOUR)
         val minute = c.get(Calendar.MINUTE)
+        val sharedPreferences = getSharedPreferences("production", Context.MODE_PRIVATE)
 
         val tpd = TimePickerDialog(this, TimePickerDialog.OnTimeSetListener(function = { view, h, m ->
 
@@ -81,6 +122,8 @@ class MainActivity : AppCompatActivity() {
             val mconverted = convertM(m)
             val ampm = getAP(h)
             timeButton.text = hconverted.toString() + ":" + mconverted + " " + ampm
+
+            sharedPreferences.edit().putString("first_reservation", hconverted.toString()).apply()
 
         }),hour,minute,false)
 
@@ -171,34 +214,76 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    fun getAP(hour: Int): String {
-        if (hour > 12){
-            return "pm"
-        }
-        else {
-            return "am"
-        }
+    fun clickReservation(view: View) {
+        var popup: PopupMenu? = null;
+        popup = PopupMenu(this, view)
+        popup.inflate(R.menu.res_buttons)
+        popup.setOnMenuItemClickListener(PopupMenu.OnMenuItemClickListener { item: MenuItem? ->
+
+            when (item!!.itemId) {
+                R.id.check_in -> {
+                    clickCheckIn()
+                }
+                R.id.cancel -> {
+                    clickCancel()
+                }
+            }
+            true
+        })
+        popup.show()
     }
 
-    fun convertH(hour: Int): Int {
-        if (hour > 12) {
-            return hour - 12
-        }
-        else if (hour == 0) {
-            return hour + 12
-        }
-        else {
-            return hour
-        }
+    fun clickCancel() {
+        val sharedPreferences = getSharedPreferences("production", Context.MODE_PRIVATE)
+        val prefsEditor = sharedPreferences.edit()
+        prefsEditor.clear()
+        prefsEditor.apply()
+
+        Toast.makeText(this, "You have cancelled your reservation", Toast.LENGTH_LONG).show()
+
+        reservationsView.visibility = View.GONE
     }
 
-    fun convertM(min: Int): String {
-        if (min < 10){
-            return "0" + min
-        }
+    fun clickCheckIn() {
+        val sharedPreferences = getSharedPreferences("production", Context.MODE_PRIVATE)
+        val prefsEditor = sharedPreferences.edit()
+        prefsEditor.clear()
+        prefsEditor.apply()
 
-        else {
-            return min.toString()
-        }
+        Toast.makeText(this, "Thank you, you are checked in", Toast.LENGTH_LONG).show()
+
+        reservationsView.visibility = View.GONE
+    }
+
+}
+// helper funcs for string time display
+fun getAP(hour: Int): String {
+    if (hour > 12){
+        return "pm"
+    }
+    else {
+        return "am"
+    }
+}
+
+fun convertH(hour: Int): Int {
+    if (hour > 12) {
+        return hour - 12
+    }
+    else if (hour == 0) {
+        return hour + 12
+    }
+    else {
+        return hour
+    }
+}
+
+fun convertM(min: Int): String {
+    if (min < 10){
+        return "0" + min
+    }
+
+    else {
+        return min.toString()
     }
 }

@@ -18,4 +18,9 @@
     <string name="building_number">Building Number</string>
     <string name="room_number">Room Number</string>
     <string name="give_a_detailed_description_of_the_room_issue">Give a detailed description of the room issue</string>
+    <string name="access_token">
+        pk.eyJ1Ijoid2Vld29vd2Vld29vIiwiYSI6ImNqdzQ2ZWNhdTBpMnQ0MHJ5a3RweGRidG8ifQ.Shd8ZCdRSfwST-OJWrrAsw
+    </string>
+    <string name="greenMarkerDesc">Marker that implies building has empty room during specified time</string>
+    <string name="redMarkerDesc">Marker that implies building has no empty rooms during specified time</string>
 </resources>

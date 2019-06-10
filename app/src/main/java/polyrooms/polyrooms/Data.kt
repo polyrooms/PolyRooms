@@ -321,4 +321,17 @@ class DataTest {
         queryRoom("1", "1", ::queryCallback)
         Thread.sleep(5000)
     }
+
+    @Test
+    fun testaddReservationToRoom() {
+        val reservation = Reservation(TimeInterval(Time(Day.SUN, 0), Time(Day.SUN, 1)))
+        addReservationToRoom("1", "1", reservation)
+
+        fun queryCallback(room : Room?) {
+            assertThat(room?.reservations?.get(room?.reservations?.size - 1) == reservation).isTrue()
+        }
+
+        queryRoom("1", "1", ::queryCallback)
+        Thread.sleep(5000)
+    }
 }

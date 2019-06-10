@@ -1,11 +1,17 @@
 package polyrooms.polyrooms
 
+import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.MutableLiveData
+import android.arch.lifecycle.ViewModel
 import android.os.AsyncTask
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.database.*
 import java.io.Serializable
+import com.google.common.truth.Truth.assertThat
+import org.jetbrains.annotations.TestOnly
+import org.junit.Test
 
 enum class Day {
     SUN, MON, TUE, WED, THU, FRI, SAT
@@ -284,5 +290,36 @@ class DataStore : ViewModel(){
         }
 
         return ITEMS
+    }
+}
+
+class DataTest {
+    @Test
+    fun testmapToRoom() {
+        val emptyIntervalsResponse = ArrayList<TimeIntervalResponse>()
+        emptyIntervalsResponse.add(TimeIntervalResponse(TimeResponse(0, 1), TimeResponse(0,2)))
+
+        val reservationsResponse = ArrayList<ReservationResponse>()
+        reservationsResponse.add(ReservationResponse(TimeIntervalResponse(TimeResponse(1, 1), TimeResponse(1, 2))))
+        val roomResponse = RoomResponse("1", emptyIntervalsResponse, reservationsResponse)
+
+        val emptyIntervals = ArrayList<TimeInterval>()
+        emptyIntervals.add(TimeInterval(Time(Day.SUN, 1), Time(Day.SUN, 2)))
+
+        val reservations = ArrayList<Reservation>()
+        reservations.add(Reservation(TimeInterval(Time(Day.MON, 1), Time(Day.MON, 2))))
+        val expected = Room("1", emptyIntervals, reservations)
+
+        assertThat(roomResponse.mapToRoom() == expected).isTrue()
+    }
+
+    @Test
+    fun testqueryRoom() {
+        fun queryCallback(room : Room?) {
+            assertThat(room?.roomNumber == "1").isTrue()
+        }
+
+        queryRoom("1", "1", ::queryCallback)
+        Thread.sleep(1000)
     }
 }

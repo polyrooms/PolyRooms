@@ -10,7 +10,6 @@ import androidx.lifecycle.ViewModel
 import com.google.firebase.database.*
 import java.io.Serializable
 import com.google.common.truth.Truth.assertThat
-import org.jetbrains.annotations.TestOnly
 import org.junit.Test
 
 enum class Day {
@@ -320,6 +319,6 @@ class DataTest {
         }
 
         queryRoom("1", "1", ::queryCallback)
-        Thread.sleep(1000)
+        Thread.sleep(5000)
     }
 }

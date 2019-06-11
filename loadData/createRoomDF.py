@@ -1,5 +1,3 @@
-# this python code writes a dataframe with the room information to current directory
-from bs4 import BeautifulSoup
 import lxml.html as LH
 import pandas as pd
 import requests
@@ -15,30 +13,37 @@ pandasTable = pd.read_html(content, header = 0, skiprows = rowsSkip, keep_defaul
 lhTable = LH.fromstring(content)
 
 for index, row in pandasTable.iterrows():
-    if(re.match(".*-.*",row['Listing']) is None):
-        rowsSkip.append(index+2)
-pandasTable = pd.read_html(page.content, header = 0, skiprows = rowsSkip, keep_default_na = False)[0]
+  if (re.match(".*-.*", row['Listing']) is None):
+    rowsSkip.append(index + 2)
 
-# assign ICS href to ICS columns
+pandasTable = pd.read_html(page.content, header = 0, skiprows = rowsSkip, keep_default_na = False)[0]# assign ICS href to ICS columns
 icsHref = lhTable.xpath('//tr/td//a/@href')
 icsRegex = re.compile(r'\/ics\/location.*')
 icsHref = list(filter(icsRegex.match, icsHref))
-pandasTable["ICS"] = icsHref
-# get building names
+pandasTable["ICS"] = icsHref# get building names
 buildingNames = []
-buildingRegex  = re.compile(r'(.+?)[-\s].*')
+roomNames = []
+buildingRegex = re.compile(r'(.+?)[-\s].*')
+roomRegex = re.compile(r'.*[-](\w+)(.*)')
 for index, row in pandasTable.iterrows():
-    text = row.Listing
-    m = buildingRegex.search(text)
-    if m:
-        found = m.group(1)
-        buildingNames.append(found)
-
+  text = row.Listing
+  buildingFound = buildingRegex.search(text)
+  roomFound = roomRegex.search(text)
+  if buildingFound:
+    building = buildingFound.group(1)
+    buildingNames.append(building)
+  if roomFound:
+    room = roomFound.group(1)
+    roomNames.append(room)
+#print(roomNames)
+#print(buildingNames)
 # add building names
+pandasTable = pandasTable.drop(columns = ['Schedule', 'Loc Cap Calc', 'Util Fact', 'Opt Fact'])# drop rows with 99 x
 pandasTable.insert(loc = 1, column = 'Building', value = buildingNames, allow_duplicates = True)
-
-# drop unnecessary columns
-pandasTable = pandasTable.drop(columns = ['Schedule', 'Loc Cap Calc', 'Util Fact', 'Opt Fact'])
+pandasTable.insert(loc = 2, column = 'Room', value = roomNames, allow_duplicates = True)# drop unnecessary columns
+dropRowsRegex = re.compile(r'99.*')
+filter = pandasTable['Listing'].str.contains(dropRowsRegex)
+pandasTable = pandasTable[~filter]
 
 # write dataframe to disk
 pandasTable.to_pickle('./rooms.pkl')

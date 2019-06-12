@@ -117,7 +117,13 @@ fun queryRoom(buildingNumber : String, roomNumber : String, callback : (Room?) -
                     val roomsData = buildingData.child("rooms")
                     for (roomData in roomsData.children) {
                         if (roomData.child("roomNumber").value == roomNumber) {
-                            val roomResponse = roomData.getValue(RoomResponse::class.java)
+                            val roomNumber = roomData.child("roomNumber").value as String
+                            val emptyIntervalsData = roomData.child("emptyIntervals")
+                            val emptyIntervals = emptyIntervalsData.children.mapNotNull{it.getValue(TimeIntervalResponse::class.java)}
+                            val reservationsData = roomData.child("reservations")
+                            val reservations = reservationsData.children.mapNotNull{it.getValue(ReservationResponse::class.java)}
+                            val roomResponse = RoomResponse(roomNumber, emptyIntervals, reservations)
+
                             callback(roomResponse?.mapToRoom())
                         }
                     }
@@ -167,21 +173,21 @@ fun reportRoom(buildingNumber : String, roomNumber : String, report : Report) {
     val buildings = db.getReference("buildings")
     buildings.addListenerForSingleValueEvent(object : ValueEventListener {
         override fun onDataChange(p0: DataSnapshot) {
-            var reservationsRef : DatabaseReference? = null
+            var reportsRef : DatabaseReference? = null
             // finds the room that is queried
             for (buildingData in p0.children) {
                 if (buildingData.child("buildingNumber").value == buildingNumber) {
                     val roomsData = buildingData.child("rooms")
                     for (roomData in roomsData.children) {
                         if (roomData.child("roomNumber").value == roomNumber) {
-                            reservationsRef = roomData.child("reports").ref
+                            reportsRef = roomData.child("reports").ref
                         }
                     }
                 }
             }
 
-            val newID = reservationsRef?.push()?.key.toString()
-            reservationsRef?.child(newID)?.setValue(report.mapToReportResponse())
+            val newID = reportsRef?.push()?.key.toString()
+            reportsRef?.child(newID)?.setValue(report.mapToReportResponse())
         }
 
         override fun onCancelled(p0: DatabaseError) {
@@ -202,7 +208,7 @@ class DataStore : ViewModel(){
             }
 
             val data = dataSnapshot.children.mapNotNull{ buildingData ->
-                var buildingNumber = buildingData.child("buildingNumber") as String
+                var buildingNumber = buildingData.child("buildingNumber").value as String
                 val roomsData = buildingData.child("rooms")
                 val rooms = ArrayList<RoomResponse>()
                 for (roomData in roomsData.children) {

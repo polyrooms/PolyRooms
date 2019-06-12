@@ -1,16 +1,11 @@
 package polyrooms.polyrooms
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.ViewModel
 import android.os.AsyncTask
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.database.*
 import java.io.Serializable
-import com.google.common.truth.Truth.assertThat
-import org.junit.Test
 
 enum class Day {
     SUN, MON, TUE, WED, THU, FRI, SAT
@@ -122,7 +117,13 @@ fun queryRoom(buildingNumber : String, roomNumber : String, callback : (Room?) -
                     val roomsData = buildingData.child("rooms")
                     for (roomData in roomsData.children) {
                         if (roomData.child("roomNumber").value == roomNumber) {
-                            val roomResponse = roomData.getValue(RoomResponse::class.java)
+                            val roomNumber = roomData.child("roomNumber").value as String
+                            val emptyIntervalsData = roomData.child("emptyIntervals")
+                            val emptyIntervals = emptyIntervalsData.children.mapNotNull{it.getValue(TimeIntervalResponse::class.java)}
+                            val reservationsData = roomData.child("reservations")
+                            val reservations = reservationsData.children.mapNotNull{it.getValue(ReservationResponse::class.java)}
+                            val roomResponse = RoomResponse(roomNumber, emptyIntervals, reservations)
+
                             callback(roomResponse?.mapToRoom())
                         }
                     }
@@ -172,21 +173,21 @@ fun reportRoom(buildingNumber : String, roomNumber : String, report : Report) {
     val buildings = db.getReference("buildings")
     buildings.addListenerForSingleValueEvent(object : ValueEventListener {
         override fun onDataChange(p0: DataSnapshot) {
-            var reservationsRef : DatabaseReference? = null
+            var reportsRef : DatabaseReference? = null
             // finds the room that is queried
             for (buildingData in p0.children) {
                 if (buildingData.child("buildingNumber").value == buildingNumber) {
                     val roomsData = buildingData.child("rooms")
                     for (roomData in roomsData.children) {
                         if (roomData.child("roomNumber").value == roomNumber) {
-                            reservationsRef = roomData.child("reports").ref
+                            reportsRef = roomData.child("reports").ref
                         }
                     }
                 }
             }
 
-            val newID = reservationsRef?.push()?.key.toString()
-            reservationsRef?.child(newID)?.setValue(report.mapToReportResponse())
+            val newID = reportsRef?.push()?.key.toString()
+            reportsRef?.child(newID)?.setValue(report.mapToReportResponse())
         }
 
         override fun onCancelled(p0: DatabaseError) {
@@ -207,7 +208,7 @@ class DataStore : ViewModel(){
             }
 
             val data = dataSnapshot.children.mapNotNull{ buildingData ->
-                var buildingNumber = buildingData.child("buildingNumber") as String
+                var buildingNumber = buildingData.child("buildingNumber").value as String
                 val roomsData = buildingData.child("rooms")
                 val rooms = ArrayList<RoomResponse>()
                 for (roomData in roomsData.children) {
@@ -289,49 +290,5 @@ class DataStore : ViewModel(){
         }
 
         return ITEMS
-    }
-}
-
-class DataTest {
-    @Test
-    fun testmapToRoom() {
-        val emptyIntervalsResponse = ArrayList<TimeIntervalResponse>()
-        emptyIntervalsResponse.add(TimeIntervalResponse(TimeResponse(0, 1), TimeResponse(0,2)))
-
-        val reservationsResponse = ArrayList<ReservationResponse>()
-        reservationsResponse.add(ReservationResponse(TimeIntervalResponse(TimeResponse(1, 1), TimeResponse(1, 2))))
-        val roomResponse = RoomResponse("1", emptyIntervalsResponse, reservationsResponse)
-
-        val emptyIntervals = ArrayList<TimeInterval>()
-        emptyIntervals.add(TimeInterval(Time(Day.SUN, 1), Time(Day.SUN, 2)))
-
-        val reservations = ArrayList<Reservation>()
-        reservations.add(Reservation(TimeInterval(Time(Day.MON, 1), Time(Day.MON, 2))))
-        val expected = Room("1", emptyIntervals, reservations)
-
-        assertThat(roomResponse.mapToRoom() == expected).isTrue()
-    }
-
-    @Test
-    fun testqueryRoom() {
-        fun queryCallback(room : Room?) {
-            assertThat(room?.roomNumber == "1").isTrue()
-        }
-
-        queryRoom("1", "1", ::queryCallback)
-        Thread.sleep(5000)
-    }
-
-    @Test
-    fun testaddReservationToRoom() {
-        val reservation = Reservation(TimeInterval(Time(Day.SUN, 0), Time(Day.SUN, 1)))
-        addReservationToRoom("1", "1", reservation)
-
-        fun queryCallback(room : Room?) {
-            assertThat(room?.reservations?.get(room?.reservations?.size - 1) == reservation).isTrue()
-        }
-
-        queryRoom("1", "1", ::queryCallback)
-        Thread.sleep(5000)
     }
 }

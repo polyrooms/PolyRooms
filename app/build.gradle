@@ -21,6 +21,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
 }
 
 dependencies {
@@ -40,8 +43,12 @@ dependencies {
     implementation 'com.mapbox.mapboxsdk:mapbox-android-sdk:8.0.0'
 
     testImplementation 'junit:junit:4.12'
+    testImplementation "com.google.truth:truth:0.45"
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0-beta01'
+    testImplementation 'org.powermock:powermock:1.6.5'
+    testImplementation 'org.powermock:powermock-module-junit4:1.6.5'
+    testImplementation 'org.powermock:powermock-api-mockito:1.6.5'
 }
 
 apply plugin: 'com.google.gms.google-services'

@@ -1,5 +1,6 @@
 package polyrooms.polyrooms
 
+import android.app.PendingIntent.getActivity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -10,6 +11,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.core.content.ContextCompat.startActivity
+import com.google.gson.Gson
 import kotlinx.android.synthetic.main.fragment_reserve_dialog.*
 import kotlinx.android.synthetic.main.fragment_reserve_dialog_item.view.*
 import kotlin.Exception
@@ -69,22 +72,39 @@ class ReserveDialogFragment : BottomSheetDialogFragment() {
 
         init {
             reserveButton.setOnClickListener {
+                val sharedPreferences = getActivity()?.getSharedPreferences("production", Context.MODE_PRIVATE)
+
                 val buildingNumber = (arguments!!.getSerializable(ARG_BUILDING) as Building).buildingNumber
                 val roomNumber = ((arguments!!.getSerializable(ARG_ROOM) as Room).roomNumber)
                 val chosenTime = arguments!!.getSerializable(ARG_TIME) as Time
-                val day = chosenTime.day
-                val startHour = chosenTime.hour
-                val endHour : Int
+
+                var startDay = chosenTime.day
+                var endDay = chosenTime.day
+                var startHour = chosenTime.hour
+                var endHour : Int
 
                 when (reserveSpinner.selectedItem) {
                     "1 hour" -> endHour = startHour + 1
                     "2 hours" -> endHour = startHour + 2
                     "3 hours" -> endHour = startHour + 3
-                    else -> throw Exception("Spinnner contains invalid option" + reserveSpinner.selectedItem)
+                    else -> throw Exception("Spinner contains invalid option" + reserveSpinner.selectedItem)
+                }
+
+                if (endHour >= 23) {
+                    endHour %= 24
+                    endDay = nextDay(endDay)
                 }
 
                 addReservationToRoom(buildingNumber, roomNumber,
-                        Reservation(TimeInterval(Time(day, startHour), Time(day, endHour))))
+                        Reservation(TimeInterval(Time(startDay, startHour), Time(endDay, endHour))))
+
+                val prefsEditor = sharedPreferences?.edit()
+                val gson = Gson()
+                val json = gson.toJson(Reservation(TimeInterval(Time(startDay, startHour), Time(endDay, endHour)))) // myObject - instance of MyObject
+                prefsEditor?.putString("reservation", json)
+                prefsEditor?.putString("building", buildingNumber)
+                prefsEditor?.putString("room", roomNumber)
+                prefsEditor?.apply()
 
                 val intent = Intent(context, MainActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
@@ -127,19 +147,10 @@ class ReserveDialogFragment : BottomSheetDialogFragment() {
             val reserveOptions = arrayListOf<String>("1 hour", "2 hours", "3 hours")
             var mutableChosenTime = chosenTime.copy()
 
-            for (interval in chosenRoom.emptyIntervals) {
-                while (mutableChosenTime.compareTo(interval.start) >= 0
-                        && mutableChosenTime.compareTo(interval.finish) < 0
-                        && reserveOptions.isNotEmpty()) {
-                    existsEmpty = true
-
-                    times.add(reserveOptions.removeAt(0))
-                    mutableChosenTime = Time(day = mutableChosenTime.day, hour = mutableChosenTime.hour + 1)
-                }
-
-                if (existsEmpty) {
-                    break
-                }
+            while (filterRoom(chosenRoom, mutableChosenTime) && reserveOptions.isNotEmpty()) {
+                existsEmpty = true
+                times.add(reserveOptions.removeAt(0))
+                mutableChosenTime = incrementTime(mutableChosenTime, 1)
             }
 
             if (!existsEmpty) {
@@ -151,7 +162,7 @@ class ReserveDialogFragment : BottomSheetDialogFragment() {
     }
 
     companion object {
-        
+
         fun newInstance(itemCount: Int, building: Building, room: Room, time: Time, capacity: String): ReserveDialogFragment =
                 ReserveDialogFragment().apply {
                     arguments = Bundle().apply {

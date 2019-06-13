@@ -11,6 +11,18 @@ enum class Day {
     SUN, MON, TUE, WED, THU, FRI, SAT
 }
 
+fun nextDay(day : Day) : Day{
+    return when (day) {
+        Day.SUN -> Day.MON
+        Day.MON -> Day.TUE
+        Day.TUE -> Day.WED
+        Day.WED -> Day.THU
+        Day.THU -> Day.FRI
+        Day.FRI -> Day.SAT
+        Day.SAT -> Day.SUN
+    }
+}
+
 data class EmptyRoom(val roomNumber : String) : Serializable
 
 data class Report(val report : String) : Serializable
@@ -44,6 +56,16 @@ data class BuildingResponse(val buildingNumber : String = "",
 // hour ranges from 0 to 23
 data class Time(val day : Day, val hour : Int) : Serializable
 
+fun incrementTime(time : Time, hours : Int) : Time {
+    // special case if the hour increments to the next day
+    if (time.hour + hours <= 23) {
+        return Time(nextDay(time.day), (time.hour + hours) % 24)
+    }
+    else {
+        return Time(time.day, time.hour + hours)
+    }
+}
+
 fun Time.mapToTimeResponse() : TimeResponse {
     return when (day) {
         Day.SUN -> TimeResponse(0, hour)
@@ -65,6 +87,26 @@ fun Time.compareTo(otherTime : Time) : Int {
     else {
         return mapToTimeResponse().day - otherTime.mapToTimeResponse().day
     }
+}
+
+// determines whether a room is empty at a selectedTime
+fun filterRoom(room : Room, selectedTime : Time) : Boolean {
+    for (interval in room.emptyIntervals) {
+        // check if selectedTime is in the interval
+        if (interval.start.compareTo(selectedTime) <= 0 &&
+                interval.finish.compareTo(selectedTime) > 0) {
+            // check if the room is not reserved at selectedTime
+            var notReserved = true
+            for (reservation in room.reservations) {
+                if (reservation.interval.start.compareTo(selectedTime) <= 0 &&
+                        reservation.interval.finish.compareTo(selectedTime) > 0) {
+                    notReserved = false
+                }
+            }
+            return notReserved
+        }
+    }
+    return false
 }
 
 fun TimeResponse.mapToTime() : Time {
@@ -227,29 +269,7 @@ class DataStore : ViewModel(){
             println(data)
 
             fun BuildingResponse.mapToBuilding() : Building {
-                // closure for determining which rooms are empty at the selected time
-                fun filterroom(room : RoomResponse) : Boolean {
-                    for (intervalResponse in room.emptyIntervals) {
-                        val interval = intervalResponse.mapToTimeInterval()
-                        // check if selectedTime is in the interval
-                        if (interval.start.compareTo(selectedTime) <= 0 &&
-                                interval.finish.compareTo(selectedTime) > 0) {
-                            // check if the room is not reserved at selectedTime
-                            var notReserved = true
-                            for (reservationResponse in room.reservations) {
-                                val reservation = reservationResponse.mapToReservation()
-                                if (reservation.interval.start.compareTo(selectedTime) <= 0 &&
-                                        reservation.interval.finish.compareTo(selectedTime) > 0) {
-                                    notReserved = false
-                                }
-                            }
-                            return notReserved
-                        }
-                    }
-                    return false
-                }
-                val filtered = rooms.filter{filterroom(it)}
-
+                val filtered = rooms.filter{filterRoom(it.mapToRoom(), selectedTime)}
                 return Building(buildingNumber, filtered.map(RoomResponse::mapToEmptyRoom))
             }
 

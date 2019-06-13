@@ -77,9 +77,11 @@ class ReserveDialogFragment : BottomSheetDialogFragment() {
                 val buildingNumber = (arguments!!.getSerializable(ARG_BUILDING) as Building).buildingNumber
                 val roomNumber = ((arguments!!.getSerializable(ARG_ROOM) as Room).roomNumber)
                 val chosenTime = arguments!!.getSerializable(ARG_TIME) as Time
-                val day = chosenTime.day
-                val startHour = chosenTime.hour
-                val endHour : Int
+
+                var startDay = chosenTime.day
+                var endDay = chosenTime.day
+                var startHour = chosenTime.hour
+                var endHour : Int
 
                 when (reserveSpinner.selectedItem) {
                     "1 hour" -> endHour = startHour + 1
@@ -88,12 +90,17 @@ class ReserveDialogFragment : BottomSheetDialogFragment() {
                     else -> throw Exception("Spinner contains invalid option" + reserveSpinner.selectedItem)
                 }
 
+                if (endHour >= 23) {
+                    endHour %= 24
+                    endDay = nextDay(endDay)
+                }
+
                 addReservationToRoom(buildingNumber, roomNumber,
-                        Reservation(TimeInterval(Time(day, startHour), Time(day, endHour))))
+                        Reservation(TimeInterval(Time(startDay, startHour), Time(endDay, endHour))))
 
                 val prefsEditor = sharedPreferences?.edit()
                 val gson = Gson()
-                val json = gson.toJson(Reservation(TimeInterval(Time(day, startHour), Time(day, endHour)))) // myObject - instance of MyObject
+                val json = gson.toJson(Reservation(TimeInterval(Time(startDay, startHour), Time(endDay, endHour)))) // myObject - instance of MyObject
                 prefsEditor?.putString("reservation", json)
                 prefsEditor?.putString("building", buildingNumber)
                 prefsEditor?.putString("room", roomNumber)
@@ -140,7 +147,7 @@ class ReserveDialogFragment : BottomSheetDialogFragment() {
             val reserveOptions = arrayListOf<String>("1 hour", "2 hours", "3 hours")
             var mutableChosenTime = chosenTime.copy()
 
-            while (filterRoom(chosenRoom, mutableChosenTime)) {
+            while (filterRoom(chosenRoom, mutableChosenTime) && reserveOptions.isNotEmpty()) {
                 existsEmpty = true
                 times.add(reserveOptions.removeAt(0))
                 mutableChosenTime = incrementTime(mutableChosenTime, 1)
@@ -155,7 +162,7 @@ class ReserveDialogFragment : BottomSheetDialogFragment() {
     }
 
     companion object {
-        
+
         fun newInstance(itemCount: Int, building: Building, room: Room, time: Time, capacity: String): ReserveDialogFragment =
                 ReserveDialogFragment().apply {
                     arguments = Bundle().apply {

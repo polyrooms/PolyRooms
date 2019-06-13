@@ -78,7 +78,7 @@ class MapsActivity : AppCompatActivity() {
         val coordinates = BuildingsInfo.getCoordinates()
 
         buildings?.forEach { building ->
-            val location: Pair<Double, Double>? = coordinates.get(building.buildingNumber.toInt())
+            val location: Pair<Double, Double>? = coordinates.get(building.buildingNumber.toIntOrNull())
             val usedMarker: com.mapbox.mapboxsdk.annotations.Icon
 
             if (location != null) {

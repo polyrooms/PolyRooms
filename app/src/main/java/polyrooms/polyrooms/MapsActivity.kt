@@ -37,16 +37,19 @@ class MapsActivity : AppCompatActivity() {
                 // Map is set up and the style has loaded. Now you can add data or make other map adjustments
 
                 val time = intent.extras.get("time") as Time
+                val iconFactory = IconFactory.getInstance(this)
+                val greenMarker = iconFactory.fromResource(R.drawable.green_marker)
+                val redMarker = iconFactory.fromResource(R.drawable.red_marker)
 
                 viewModel.getBuildings(time).observe(this, Observer { buildings ->
-                    setMarkers(mapboxMap, buildings)
+                    setMarkers(mapboxMap, buildings, greenMarker, redMarker)
                 })
 
                 mapboxMap.setOnMarkerClickListener { marker ->
-                    Toast.makeText(this, marker.title, Toast.LENGTH_LONG).show()
-                    val intent = Intent(this, ReserveActivity::class.java)
+                    if (marker.icon == greenMarker) {
+                        val intent = Intent(this, ReserveActivity::class.java)
 
-                    val buildings: List<Building>? = viewModel.getBuildings(time).value
+                        val buildings: List<Building>? = viewModel.getBuildings(time).value
                         for (building in buildings.orEmpty()) {
                             if (marker.title == building.buildingNumber) {
                                 println("CHOSE BUILDING: " + building.buildingNumber)
@@ -55,18 +58,23 @@ class MapsActivity : AppCompatActivity() {
                                 break
                             }
                         }
+                        startActivity(intent)
+                    } else if (marker.icon == redMarker) {
+                        Toast.makeText(this, "No rooms available for selected building!",
+                                Toast.LENGTH_LONG).show()
+                    } else {
+                        throw Exception("Clicked unrecognizable marker icon.")
+                    }
 
-                    startActivity(intent)
                     return@setOnMarkerClickListener true
                 }
             }
         }
     }
 
-    private fun setMarkers(mapboxMap: MapboxMap, buildings: List<Building>?) {
-        val iconFactory = IconFactory.getInstance(this)
-        val greenMarker = iconFactory.fromResource(R.drawable.green_marker)
-        val redMarker = iconFactory.fromResource(R.drawable.red_marker)
+    private fun setMarkers(mapboxMap: MapboxMap, buildings: List<Building>?,
+                           greenMarker: com.mapbox.mapboxsdk.annotations.Icon,
+                           redMarker: com.mapbox.mapboxsdk.annotations.Icon) {
         val coordinates = BuildingsInfo.getCoordinates()
 
         buildings?.forEach { building ->

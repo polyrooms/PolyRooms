@@ -29,7 +29,6 @@ class ReserveActivity : AppCompatActivity(), ReserveDialogFragment.Listener {
 
         listView.setOnItemClickListener { _, _, position, _ ->
             val selectedRoom = listOfAvailableRooms[position]
-            Toast.makeText(this, selectedRoom.roomNumber, Toast.LENGTH_LONG).show()
             ReserveDialogFragment.newInstance(1, building, selectedRoom,
                     intent.extras.get("Time") as Time, "35")
                     .show(supportFragmentManager, "dialog")

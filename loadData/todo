@@ -1,6 +1,0 @@
-{ "buildings" : [ { 
-"buildingNumber" : 1, 
-"rooms" : [ { 
-    "emptyIntervals" : [ { "finish" : { "day" : 0, "hour" : 3 }, "start" : { "day" : 0, "hour" : 1 } } ], 
-    "reservations" : { "-Lg5j7s0xLAqbqsiIM_N" : { "interval" : { "finish" : { "day" : 1, "hour" : 12 }, "start" : { "day" : 1, "hour" : 8 } } } }, 
-    "roomNumber" : 1 } ] } ] }

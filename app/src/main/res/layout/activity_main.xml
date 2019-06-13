@@ -85,38 +85,67 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/reservationsText"
-            android:visibility="visible"
+            android:visibility="invisible"
             android:layout_marginTop="5dp"
             android:background="@drawable/reservation_background"
             android:onClick="clickReservation">
 
-            <LinearLayout
-                android:id="@+id/buildingInfo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-                <TextView
-                    android:id="@+id/buildingText"
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/buildingDay">
+                <LinearLayout
+                    android:id="@+id/buildingInfo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/buildingText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Building: "
+                        android:textColor="@color/mountainMeadow"
+                        android:textSize="18sp"
+                        android:textStyle="bold"/>
+                    <TextView
+                        android:id="@+id/buildingNum"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="null"
+                        android:textColor="@color/mountainMeadow"
+                        android:textSize="18sp"
+                        android:textStyle="italic"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/dayInfo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Building: "
-                    android:textColor="@color/mountainMeadow"
-                    android:textSize="18sp"
-                    android:textStyle="bold"/>
-                <TextView
-                    android:id="@+id/buildingNum"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="null"
-                    android:textColor="@color/mountainMeadow"
-                    android:textSize="18sp"
-                    android:textStyle="italic"/>
-            </LinearLayout>
+                    android:layout_gravity="end">
+                    <TextView
+                        android:id="@+id/dayText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Day: "
+                        android:textColor="@color/mountainMeadow"
+                        android:textSize="18sp"
+                        android:textStyle="bold"/>
+                    <TextView
+                        android:id="@+id/day"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="null"
+                        android:textColor="@color/mountainMeadow"
+                        android:textSize="18sp"
+                        android:textStyle="italic"/>
+                </LinearLayout>
+
+            </FrameLayout>
 
             <FrameLayout
                 android:id="@+id/roomCap"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/buildingInfo">
+                android:layout_below="@id/buildingDay">
                 <LinearLayout
                     android:id="@+id/roomInfo"
                     android:layout_width="wrap_content"

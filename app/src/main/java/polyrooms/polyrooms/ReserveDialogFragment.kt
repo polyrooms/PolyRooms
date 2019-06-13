@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import com.google.gson.Gson
 import kotlinx.android.synthetic.main.fragment_reserve_dialog.*
 import kotlinx.android.synthetic.main.fragment_reserve_dialog_item.view.*
 import kotlin.Exception
@@ -69,6 +70,8 @@ class ReserveDialogFragment : BottomSheetDialogFragment() {
 
         init {
             reserveButton.setOnClickListener {
+                val sharedPreferences = getActivity()?.getSharedPreferences("production", Context.MODE_PRIVATE)
+
                 val buildingNumber = (arguments!!.getSerializable(ARG_BUILDING) as Building).buildingNumber
                 val roomNumber = ((arguments!!.getSerializable(ARG_ROOM) as Room).roomNumber)
                 val chosenTime = arguments!!.getSerializable(ARG_TIME) as Time
@@ -80,11 +83,19 @@ class ReserveDialogFragment : BottomSheetDialogFragment() {
                     "1 hour" -> endHour = startHour + 1
                     "2 hours" -> endHour = startHour + 2
                     "3 hours" -> endHour = startHour + 3
-                    else -> throw Exception("Spinnner contains invalid option" + reserveSpinner.selectedItem)
+                    else -> throw Exception("Spinner contains invalid option" + reserveSpinner.selectedItem)
                 }
 
                 addReservationToRoom(buildingNumber, roomNumber,
                         Reservation(TimeInterval(Time(day, startHour), Time(day, endHour))))
+
+                val prefsEditor = sharedPreferences?.edit()
+                val gson = Gson()
+                val json = gson.toJson(Reservation(TimeInterval(Time(day, startHour), Time(day, endHour)))) // myObject - instance of MyObject
+                prefsEditor?.putString("reservation", json)
+                prefsEditor?.putString("building", buildingNumber)
+                prefsEditor?.putString("room", roomNumber)
+                prefsEditor?.apply()
 
                 val intent = Intent(context, MainActivity::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)

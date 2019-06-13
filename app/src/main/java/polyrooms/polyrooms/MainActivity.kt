@@ -111,7 +111,6 @@ class MainActivity : AppCompatActivity() {
         val c = Calendar.getInstance()
         val hour = c.get(Calendar.HOUR)
         val minute = c.get(Calendar.MINUTE)
-        val sharedPreferences = getSharedPreferences("production", Context.MODE_PRIVATE)
 
         val tpd = TimePickerDialog(this, TimePickerDialog.OnTimeSetListener(function = { view, h, m ->
 
@@ -122,8 +121,6 @@ class MainActivity : AppCompatActivity() {
             val mconverted = convertM(m)
             val ampm = getAP(h)
             timeButton.text = hconverted.toString() + ":" + mconverted + " " + ampm
-
-            sharedPreferences.edit().putString("first_reservation", hconverted.toString()).apply()
 
         }),hour,minute,false)
 

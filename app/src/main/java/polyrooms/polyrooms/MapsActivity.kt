@@ -2,6 +2,7 @@ package polyrooms.polyrooms
 
 import android.content.Intent
 import android.graphics.drawable.Icon
+import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -15,6 +16,7 @@ import com.mapbox.mapboxsdk.maps.MapView
 import com.mapbox.mapboxsdk.maps.MapboxMap
 import com.mapbox.mapboxsdk.maps.Style
 import kotlinx.android.synthetic.main.activity_maps.*
+import java.io.Serializable
 
 class MapsActivity : AppCompatActivity() {
 
@@ -35,44 +37,45 @@ class MapsActivity : AppCompatActivity() {
                 // Map is set up and the style has loaded. Now you can add data or make other map adjustments
 
                 val time = intent.extras.get("time") as Time
-                println(time)
-
-                /*
-
-                Call this function rather than just setMarkers once database is up and running
+                val iconFactory = IconFactory.getInstance(this)
+                val greenMarker = iconFactory.fromResource(R.drawable.green_marker)
+                val redMarker = iconFactory.fromResource(R.drawable.red_marker)
 
                 viewModel.getBuildings(time).observe(this, Observer { buildings ->
-                    setMarkers(mapboxMap, buildings)
-                }) */
+                    setMarkers(mapboxMap, buildings, greenMarker, redMarker)
+                })
 
-                setMarkers(mapboxMap, null)
                 mapboxMap.setOnMarkerClickListener { marker ->
-                    Toast.makeText(this, marker.title, Toast.LENGTH_LONG).show()
-                    val intent = Intent(this, MainActivity::class.java)
-                    intent.putExtra("building", marker.title)
-                    startActivity(intent)
+                    if (marker.icon == greenMarker) {
+                        val intent = Intent(this, ReserveActivity::class.java)
+
+                        val buildings: List<Building>? = viewModel.getBuildings(time).value
+                        for (building in buildings.orEmpty()) {
+                            if (marker.title == building.buildingNumber) {
+                                println("CHOSE BUILDING: " + building.buildingNumber)
+                                intent.putExtra("Building", building as Serializable)
+                                intent.putExtra("Time", time as Serializable)
+                                break
+                            }
+                        }
+                        startActivity(intent)
+                    } else if (marker.icon == redMarker) {
+                        Toast.makeText(this, "No rooms available for selected building!",
+                                Toast.LENGTH_LONG).show()
+                    } else {
+                        throw Exception("Clicked unrecognizable marker icon.")
+                    }
+
                     return@setOnMarkerClickListener true
                 }
             }
         }
     }
 
-    private fun setMarkers(mapboxMap: MapboxMap, buildings: List<Building>?) {
-        val iconFactory = IconFactory.getInstance(this)
-        val greenMarker = iconFactory.fromResource(R.drawable.green_marker)
-        val redMarker = iconFactory.fromResource(R.drawable.red_marker)
+    private fun setMarkers(mapboxMap: MapboxMap, buildings: List<Building>?,
+                           greenMarker: com.mapbox.mapboxsdk.annotations.Icon,
+                           redMarker: com.mapbox.mapboxsdk.annotations.Icon) {
         val coordinates = BuildingsInfo.getCoordinates()
-
-        coordinates.forEach {
-            (buildingNum, coordinates) -> mapboxMap.addMarker(MarkerOptions()
-                .position(LatLng(coordinates.first, coordinates.second))
-                .title(buildingNum.toString())
-                .icon(greenMarker))
-        }
-
-        /*
-
-        Use this code once database is up and running. For now the map just labels every building green
 
         buildings?.forEach { building ->
             val location: Pair<Double, Double>? = coordinates.get(building.buildingNumber.toInt())
@@ -90,7 +93,6 @@ class MapsActivity : AppCompatActivity() {
                         .icon(usedMarker))
             }
         }
-        */
     }
 
     override fun onStart() {

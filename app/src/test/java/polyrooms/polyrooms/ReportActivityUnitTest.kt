@@ -40,4 +40,22 @@ class ReportActivityUnitTest {
         val emptystring = ""
         assertFalse(checkDescription(emptystring))
     }
+
+    @Test
+    fun testTrueBuilding() {
+        val nonemptystring = "101A"
+        assertTrue(checkBuildingNum(nonemptystring))
+    }
+
+    @Test
+    fun testTrueRoom() {
+        val nonemptystring = "101A"
+        assertTrue(checkRoomNum(nonemptystring))
+    }
+
+    @Test
+    fun testTrueDescription() {
+        val nonemptystring = "This is an example description."
+        assertTrue(checkDescription(nonemptystring))
+    }
 }

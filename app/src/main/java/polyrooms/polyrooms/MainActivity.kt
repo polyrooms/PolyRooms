@@ -1,4 +1,3 @@
-
 package polyrooms.polyrooms
 
 import android.animation.Animator
@@ -18,24 +17,13 @@ import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.Serializable
 import java.util.*
-import android.R.id.edit
-import android.content.SharedPreferences.Editor
 import com.google.gson.Gson
-import android.text.method.TextKeyListener.clear
-import android.R.id.edit
-import android.animation.AnimatorListenerAdapter
-import android.content.SharedPreferences
-
-
-
 
 class MainActivity : AppCompatActivity() {
 
     var ghour: Int = -1
     var gmin: Int = -1
     var gday: String = "null"
-
-    private var shortAnimationDuration: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,26 +34,21 @@ class MainActivity : AppCompatActivity() {
 
         val sharedPreferences = getSharedPreferences("production", Context.MODE_PRIVATE)
 
-        //STORE A CUSTOM OBJECT TO SHARED PREFERENCES
-        /*
-        val prefsEditor = sharedPreferences.edit()
-        val gson = Gson()
-        val json = gson.toJson(myObject) // myObject - instance of MyObject
-        prefsEditor.putString("MyObject", json)
-        prefsEditor.commit()
-        */
+        if (sharedPreferences.contains("reservation")) {
+            val gson = Gson()
+            val json = sharedPreferences.getString("reservation", "")
+            val res = gson.fromJson<Reservation>(json, Reservation::class.java!!)
 
-        //RETRIEVE INSTANCE OF CUSTOM OBJECT
-        /*
-        val gson = Gson()
-        val json = sharedPreferences.getString("MyObject", "")
-        val obj = gson.fromJson<MyObject>(json, MyObject::class.java!!)
-        */
+            val buil = sharedPreferences.getString("building", "")
+            val roo = sharedPreferences.getString("room", "")
 
-
-        var savedReservation: String = "null"
-        if (sharedPreferences.contains("first_reservation")) {
-            savedReservation = sharedPreferences.getString("first_reservation", "")
+            buildingNum.text = buil
+            roomNum.text = roo
+            capacity.text = "35"
+            startTime.text = convertH(res.interval.start.hour).toString() + ":00 " + getAP(res.interval.start.hour)
+            endTime.text = convertH(res.interval.finish.hour).toString() + ":00 " + getAP(res.interval.finish.hour)
+            day.text = res.interval.start.day.toString()
+            reservationsView.visibility = VISIBLE
         }
 
         object : CountDownTimer(850, 1000) {
@@ -78,8 +61,6 @@ class MainActivity : AppCompatActivity() {
 
             override fun onTick(p0: Long) {}
         }.start()
-
-        Toast.makeText(this, savedReservation, Toast.LENGTH_LONG).show()
     }
 
     private fun startAnimation() {
@@ -230,7 +211,7 @@ class MainActivity : AppCompatActivity() {
         popup.show()
     }
 
-    fun clickCancel() {
+    private fun clickCancel() {
         val sharedPreferences = getSharedPreferences("production", Context.MODE_PRIVATE)
         val prefsEditor = sharedPreferences.edit()
         prefsEditor.clear()
@@ -241,7 +222,7 @@ class MainActivity : AppCompatActivity() {
         reservationsView.visibility = View.GONE
     }
 
-    fun clickCheckIn() {
+    private fun clickCheckIn() {
         val sharedPreferences = getSharedPreferences("production", Context.MODE_PRIVATE)
         val prefsEditor = sharedPreferences.edit()
         prefsEditor.clear()

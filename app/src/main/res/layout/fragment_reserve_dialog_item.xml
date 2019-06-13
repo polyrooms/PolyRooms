@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/roomNumText"
+        android:layout_width="210dp"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/list_item_spacing_half"
+        android:paddingLeft="@dimen/list_item_spacing"
+        android:paddingRight="@dimen/list_item_spacing"
+        android:paddingTop="@dimen/list_item_spacing_half"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:background="?attr/selectableItemBackground"
+        tools:text="Room" android:text="Room:"
+        app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent"
+        />
+
+    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/roomCapacityText"
+        android:layout_width="210dp"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/list_item_spacing_half"
+        android:paddingLeft="@dimen/list_item_spacing"
+        android:paddingRight="@dimen/list_item_spacing"
+        android:paddingTop="@dimen/list_item_spacing_half"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:background="?attr/selectableItemBackground"
+        tools:text="Capacity" android:text="Capacity: "
+        app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toBottomOf="@+id/roomNumText"
+        />
+
+    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/reserveForText"
+        android:layout_width="210dp"
+        android:layout_height="47dp"
+        android:paddingBottom="@dimen/list_item_spacing_half"
+        android:paddingLeft="@dimen/list_item_spacing"
+        android:paddingRight="@dimen/list_item_spacing"
+        android:paddingTop="@dimen/list_item_spacing_half"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:background="?attr/selectableItemBackground"
+        tools:text="Reserve For" android:text="Reserve For: "
+        app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toBottomOf="@+id/roomCapacityText"
+        />
+    <Button
+        android:text="Reserve"
+        android:layout_width="256dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent" android:layout_marginStart="64dp"
+        app:layout_constraintEnd_toEndOf="parent" android:layout_marginEnd="64dp"
+        app:layout_constraintTop_toBottomOf="@+id/reserveForText" android:layout_marginTop="16dp"
+        android:id="@+id/reserveButton"
+        android:background="@color/mountainMeadow"/>
+    <TextView
+        android:id="@+id/roomNum"
+        android:text="TextView"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:gravity="right|center_vertical"
+        android:layout_marginEnd="32dp"
+        android:layout_marginRight="32dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/roomNumText"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="ToolsTextView" android:textSize="18sp"/>
+    <TextView
+        android:id="@+id/capacity"
+        android:text="TextView"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:gravity="right|center_vertical" app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="32dp"
+        android:layout_marginRight="32dp"
+        app:layout_constraintStart_toEndOf="@+id/roomCapacityText"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintTop_toBottomOf="@+id/roomNum" android:textSize="18sp"/>
+    <Spinner
+        android:layout_width="149dp"
+        android:layout_height="29dp"
+        android:id="@+id/reserveFor"
+        app:layout_constraintStart_toEndOf="@+id/reserveForText"
+        android:layout_marginStart="64dp"
+        android:layout_marginLeft="64dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@+id/capacity"
+        android:dropDownWidth="wrap_content" app:layout_constraintEnd_toEndOf="@+id/capacity"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

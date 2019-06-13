@@ -11,7 +11,7 @@ enum class Day {
     SUN, MON, TUE, WED, THU, FRI, SAT
 }
 
-data class EmptyRoom(val roomNumber : String)
+data class EmptyRoom(val roomNumber : String) : Serializable
 
 data class Report(val report : String) : Serializable
 data class ReportResponse(val report : String = "")
@@ -21,7 +21,7 @@ fun Report.mapToReportResponse() : ReportResponse {
 }
 
 // contains time intervals in which a room is empty
-data class Room(val roomNumber : String, val emptyIntervals : List<TimeInterval>, val reservations : List<Reservation>)
+data class Room(val roomNumber : String, val emptyIntervals : List<TimeInterval>, val reservations : List<Reservation>) : Serializable
 data class RoomResponse(val roomNumber : String = "",
                         val emptyIntervals : List<TimeIntervalResponse> = List(0, {a -> TimeIntervalResponse(TimeResponse(0, 0), TimeResponse(0, 0))}),
                         val reservations : List<ReservationResponse> = List(0, {a -> ReservationResponse(TimeIntervalResponse(TimeResponse(0, 0), TimeResponse(0, 0))) }))

@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.core.content.ContextCompat.startActivity
 import kotlinx.android.synthetic.main.fragment_reserve_dialog.*
 import kotlinx.android.synthetic.main.fragment_reserve_dialog_item.view.*
 import kotlin.Exception
@@ -127,19 +128,10 @@ class ReserveDialogFragment : BottomSheetDialogFragment() {
             val reserveOptions = arrayListOf<String>("1 hour", "2 hours", "3 hours")
             var mutableChosenTime = chosenTime.copy()
 
-            for (interval in chosenRoom.emptyIntervals) {
-                while (mutableChosenTime.compareTo(interval.start) >= 0
-                        && mutableChosenTime.compareTo(interval.finish) < 0
-                        && reserveOptions.isNotEmpty()) {
-                    existsEmpty = true
-
-                    times.add(reserveOptions.removeAt(0))
-                    mutableChosenTime = Time(day = mutableChosenTime.day, hour = mutableChosenTime.hour + 1)
-                }
-
-                if (existsEmpty) {
-                    break
-                }
+            while (filterRoom(chosenRoom, mutableChosenTime)) {
+                existsEmpty = true
+                times.add(reserveOptions.removeAt(0))
+                mutableChosenTime = incrementTime(mutableChosenTime, 1)
             }
 
             if (!existsEmpty) {

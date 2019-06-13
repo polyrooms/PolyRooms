@@ -14,7 +14,6 @@ import kotlinx.android.synthetic.main.fragment_reserve_dialog.*
 import kotlinx.android.synthetic.main.fragment_reserve_dialog_item.view.*
 import kotlin.Exception
 
-// TODO: Customize parameter argument names
 const val ARG_ITEM_COUNT = "item_count"
 const val ARG_BUILDING = "Building"
 const val ARG_ROOM = "Room"
@@ -23,14 +22,8 @@ const val ARG_CAPACITY = "Capacity"
 
 /**
  *
- * A fragment that shows a list of items as a modal bottom sheet.
+ * A fragment that shows a list of rooms as a modal bottom sheet.
  *
- * You can show this modal bottom sheet from your activity like this:
- * <pre>
- *    ReserveDialogFragment.newInstance(30).show(supportFragmentManager, "dialog")
- * </pre>
- *
- * You activity (or fragment) needs to implement [ReserveDialogFragment.Listener].
  */
 class ReserveDialogFragment : BottomSheetDialogFragment() {
     private var mListener: Listener? = null
@@ -158,8 +151,7 @@ class ReserveDialogFragment : BottomSheetDialogFragment() {
     }
 
     companion object {
-
-        // TODO: Customize parameters
+        
         fun newInstance(itemCount: Int, building: Building, room: Room, time: Time, capacity: String): ReserveDialogFragment =
                 ReserveDialogFragment().apply {
                     arguments = Bundle().apply {

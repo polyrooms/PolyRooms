@@ -21,6 +21,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
 }
 
 dependencies {
@@ -35,14 +38,20 @@ dependencies {
     implementation 'com.google.firebase:firebase-database:17.0.0'
     def lifecycle_version = "2.0.0"
     implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
-
     // Mapbox
     implementation 'com.mapbox.mapboxsdk:mapbox-android-sdk:8.0.0'
 
-    implementation 'com.google.code.gson:gson:2.6.2'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'com.google.android.material:material:1.0.0'
+    implementation 'androidx.recyclerview:recyclerview:1.0.0'
+
     testImplementation 'junit:junit:4.12'
-
-
+    testImplementation "com.google.truth:truth:0.45"
+    androidTestImplementation 'androidx.test:runner:1.2.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0-beta01'
+    testImplementation 'org.powermock:powermock:1.6.5'
+    testImplementation 'org.powermock:powermock-module-junit4:1.6.5'
+    testImplementation 'org.powermock:powermock-api-mockito:1.6.5'
 }
 
 kotlin {

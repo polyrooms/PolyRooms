@@ -1,5 +1,6 @@
 package polyrooms.polyrooms
 
+import android.app.PendingIntent.getActivity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -10,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.core.content.ContextCompat.startActivity
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.fragment_reserve_dialog.*
 import kotlinx.android.synthetic.main.fragment_reserve_dialog_item.view.*
@@ -138,19 +140,10 @@ class ReserveDialogFragment : BottomSheetDialogFragment() {
             val reserveOptions = arrayListOf<String>("1 hour", "2 hours", "3 hours")
             var mutableChosenTime = chosenTime.copy()
 
-            for (interval in chosenRoom.emptyIntervals) {
-                while (mutableChosenTime.compareTo(interval.start) >= 0
-                        && mutableChosenTime.compareTo(interval.finish) < 0
-                        && reserveOptions.isNotEmpty()) {
-                    existsEmpty = true
-
-                    times.add(reserveOptions.removeAt(0))
-                    mutableChosenTime = Time(day = mutableChosenTime.day, hour = mutableChosenTime.hour + 1)
-                }
-
-                if (existsEmpty) {
-                    break
-                }
+            while (filterRoom(chosenRoom, mutableChosenTime)) {
+                existsEmpty = true
+                times.add(reserveOptions.removeAt(0))
+                mutableChosenTime = incrementTime(mutableChosenTime, 1)
             }
 
             if (!existsEmpty) {

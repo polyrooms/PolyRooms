@@ -55,7 +55,7 @@ class DataTest {
         val emptyIntervals = arrayListOf(reservedTimeInterval,
                 TimeInterval(Time(Day.TUE, 10), Time(Day.TUE, 13)))
         val reservedIntervals = arrayListOf(Reservation(reservedTimeInterval))
-        val room: Room = Room(roomNumber = "101", emptyIntervals = emptyIntervals, reservations = reservedIntervals)
+        val room= Room(roomNumber = "101", emptyIntervals = emptyIntervals, reservations = reservedIntervals)
 
         assertFalse(filterRoom(room, chosenTime))
     }

@@ -46,4 +46,17 @@ class DataTest {
 
         assertEquals(reservation.interval, timeInterval)
     }
+
+    @Test
+    // test if returns false when the room is already reserved
+    fun testFilterRoom() {
+        val chosenTime = Time(Day.SUN, 23)
+        val reservedTimeInterval = TimeInterval(Time(Day.SUN, 23), Time(Day.MON, 1))
+        val emptyIntervals = arrayListOf(reservedTimeInterval,
+                TimeInterval(Time(Day.TUE, 10), Time(Day.TUE, 13)))
+        val reservedIntervals = arrayListOf(Reservation(reservedTimeInterval))
+        val room: Room = Room(roomNumber = "101", emptyIntervals = emptyIntervals, reservations = reservedIntervals)
+
+        assertFalse(filterRoom(room, chosenTime))
+    }
 }

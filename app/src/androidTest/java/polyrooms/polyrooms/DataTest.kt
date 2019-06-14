@@ -13,14 +13,14 @@ class DataTest {
 
         val reservationsResponse = ArrayList<ReservationResponse>()
         reservationsResponse.add(ReservationResponse(TimeIntervalResponse(TimeResponse(1, 1), TimeResponse(1, 2))))
-        val roomResponse = RoomResponse("1", emptyIntervalsResponse, reservationsResponse)
+        val roomResponse = RoomResponse("1", "35", emptyIntervalsResponse, reservationsResponse)
 
         val emptyIntervals = ArrayList<TimeInterval>()
         emptyIntervals.add(TimeInterval(Time(Day.SUN, 1), Time(Day.SUN, 2)))
 
         val reservations = ArrayList<Reservation>()
         reservations.add(Reservation(TimeInterval(Time(Day.MON, 1), Time(Day.MON, 2))))
-        val expected = Room("1", emptyIntervals, reservations)
+        val expected = Room("1", "35", emptyIntervals, reservations)
 
         assertEquals(roomResponse.mapToRoom(), expected)
     }
@@ -104,7 +104,7 @@ class DataTest {
         val emptyIntervals = arrayListOf(reservedTimeInterval,
                 TimeInterval(Time(Day.TUE, 10), Time(Day.TUE, 13)))
         val reservedIntervals = arrayListOf(Reservation(reservedTimeInterval))
-        val room= Room(roomNumber = "101", emptyIntervals = emptyIntervals, reservations = reservedIntervals)
+        val room= Room(roomNumber = "101", roomCapacity= "35", emptyIntervals = emptyIntervals, reservations = reservedIntervals)
 
         assertFalse(filterRoom(room, chosenTime))
     }

@@ -32,7 +32,7 @@ class ListOfRoomsAdapter(private val context: Context,
 
         val room = getItem(position)
         roomNumTextView.text = room.roomNumber
-        capacityTextView.text = "35"
+        capacityTextView.text = room.roomCapacity
 
         return rowView
     }

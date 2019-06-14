@@ -41,8 +41,6 @@ cache:
 
 before_script:
   - chmod +x gradlew
-  - adb kill-server
-  - adb start-server
 
 script:
   - ./gradlew clean build

@@ -33,13 +33,15 @@ fun Report.mapToReportResponse() : ReportResponse {
 }
 
 // contains time intervals in which a room is empty
-data class Room(val roomNumber : String, val emptyIntervals : List<TimeInterval>, val reservations : List<Reservation>) : Serializable
+data class Room(val roomNumber : String, val roomCapacity : String, val emptyIntervals : List<TimeInterval>, val reservations : List<Reservation>) : Serializable
 data class RoomResponse(val roomNumber : String = "",
+                        val roomCapacity : String = "",
                         val emptyIntervals : List<TimeIntervalResponse> = List(0, {a -> TimeIntervalResponse(TimeResponse(0, 0), TimeResponse(0, 0))}),
                         val reservations : List<ReservationResponse> = List(0, {a -> ReservationResponse(TimeIntervalResponse(TimeResponse(0, 0), TimeResponse(0, 0))) }))
 
 fun RoomResponse.mapToRoom() : Room {
     return Room(roomNumber,
+            roomCapacity,
             emptyIntervals.map(TimeIntervalResponse::mapToTimeInterval),
             reservations.map(ReservationResponse::mapToReservation))
 }
@@ -160,11 +162,12 @@ fun queryRoom(buildingNumber : String, roomNumber : String, callback : (Room?) -
                     for (roomData in roomsData.children) {
                         if (roomData.child("roomNumber").value == roomNumber) {
                             val roomNumber = roomData.child("roomNumber").value as String
+                            val roomCapacity = roomData.child("roomCapacity").value as String
                             val emptyIntervalsData = roomData.child("emptyIntervals")
                             val emptyIntervals = emptyIntervalsData.children.mapNotNull{it.getValue(TimeIntervalResponse::class.java)}
                             val reservationsData = roomData.child("reservations")
                             val reservations = reservationsData.children.mapNotNull{it.getValue(ReservationResponse::class.java)}
-                            val roomResponse = RoomResponse(roomNumber, emptyIntervals, reservations)
+                            val roomResponse = RoomResponse(roomNumber, roomCapacity, emptyIntervals, reservations)
 
                             callback(roomResponse?.mapToRoom())
                         }
@@ -255,13 +258,14 @@ class DataStore : ViewModel(){
                 val rooms = ArrayList<RoomResponse>()
                 for (roomData in roomsData.children) {
                     val roomNumber = roomData.child("roomNumber").value as String
+                    val roomCapacity = roomData.child("roomCapacity").value as String
                     val emptyIntervalsData = roomData.child("emptyIntervals")
                     val emptyIntervals = emptyIntervalsData.children.mapNotNull{it.getValue(TimeIntervalResponse::class.java)}
                     println("empty intervals")
                     println(emptyIntervals)
                     val reservationsData = roomData.child("reservations")
                     val reservations = reservationsData.children.mapNotNull{it.getValue(ReservationResponse::class.java)}
-                    rooms.add(RoomResponse(roomNumber, emptyIntervals, reservations))
+                    rooms.add(RoomResponse(roomNumber, roomCapacity, emptyIntervals, reservations))
                 }
                 return@mapNotNull BuildingResponse(buildingNumber, rooms)
             }

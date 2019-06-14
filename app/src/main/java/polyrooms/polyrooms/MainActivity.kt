@@ -42,10 +42,11 @@ class MainActivity : AppCompatActivity() {
 
             val buil = sharedPreferences.getString("building", "")
             val roo = sharedPreferences.getString("room", "")
+            val cap = sharedPreferences.getString("capacity", "")
 
             buildingNum.text = buil
             roomNum.text = roo
-            capacity.text = "35"
+            capacity.text = cap
             startTime.text = convertH(res.interval.start.hour).toString() + ":00 " + getAP(res.interval.start.hour)
             endTime.text = convertH(res.interval.finish.hour).toString() + ":00 " + getAP(res.interval.finish.hour)
             day.text = res.interval.start.day.toString()

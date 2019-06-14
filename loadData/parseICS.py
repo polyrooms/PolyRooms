@@ -56,14 +56,15 @@ class building:
 
 
 class room:
-    def __init__(self, roomNumber):
+    def __init__(self, roomNumber, roomCapacity):
         self.emptyIntervals = []
         self.reservations = {}
         self.reports = {}
         self.roomNumber = roomNumber
+        self.roomCapacity = roomCapacity
 
     def setEmptyIntervals(self, emptyIntervals):
-        self.emptyIntervals = emptyIntervals
+        self.emptyIntervals = emptyIntervals.emptyIntervals
 
 
 # build for 1 ics file
@@ -79,8 +80,9 @@ for index, row in roomDF.iterrows():
         tempBuilding = building(buildingNumber)
     url = "http://schedules.calpoly.edu" + row.ICS
     cal = Calendar.from_ical(requests.get(url).text)
+    capacity = row["Loc Cap Reg"]
     # create temp room
-    tempRoom = room(row.Room)
+    tempRoom = room(row.Room, capacity)
     tempEmptyIntervals = emptyIntervals()
     # populate empty intervals for tempRoom
     for component in cal.walk():
@@ -98,5 +100,5 @@ for index, row in roomDF.iterrows():
     tempRoom.setEmptyIntervals(tempEmptyIntervals)
     tempBuilding.addRoom(tempRoom)
 frozen = jsonpickle.encode(buildingDB, unpicklable=False)
-with open("polyroomsJSON", "w") as f:
+with open("polyrooms.json", "w") as f:
     f.write(frozen)

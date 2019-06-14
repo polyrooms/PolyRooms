@@ -29,3 +29,7 @@ local.properties
 build
 captures
 .externalNativeBuild
+loadData/*.json
+loadData/*.pkl
+loadData/Pipfile.lock
+loadData/.ipynb_checkpoints*

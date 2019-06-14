@@ -51,4 +51,3 @@ df = df[~filter]
 
 # write dataframe to disk
 df.to_pickle("./rooms.pkl")
-df.to_html("./rooms.html")

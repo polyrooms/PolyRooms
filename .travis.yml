@@ -44,4 +44,4 @@ before_script:
 script:
   - ./gradlew clean build
   - ./gradlew test
-  - ./gradlew clean test
+  - ./gradlew connectedAndroidTest

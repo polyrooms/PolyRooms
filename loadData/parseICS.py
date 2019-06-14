@@ -102,4 +102,3 @@ for index, row in roomDF.iterrows():
 frozen = jsonpickle.encode(buildingDB, unpicklable=False)
 with open("polyrooms.json", "w") as f:
     f.write(frozen)
-

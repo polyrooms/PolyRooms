@@ -44,4 +44,7 @@ before_script:
 script:
   - ./gradlew clean build
   - ./gradlew test
-
+  - ./gradlew DataTest
+  - ./gradlew ExampleUnitTest
+  - ./gradlew MainActivityUnitTest
+  - ./gradlew ReportActivityUnitTest

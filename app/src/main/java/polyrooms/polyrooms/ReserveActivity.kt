@@ -30,7 +30,7 @@ class ReserveActivity : AppCompatActivity(), ReserveDialogFragment.Listener {
         listView.setOnItemClickListener { _, _, position, _ ->
             val selectedRoom = listOfAvailableRooms[position]
             ReserveDialogFragment.newInstance(1, building, selectedRoom,
-                    intent.extras.get("Time") as Time, "35")
+                    intent.extras.get("Time") as Time, selectedRoom.roomCapacity)
                     .show(supportFragmentManager, "dialog")
         }
     }

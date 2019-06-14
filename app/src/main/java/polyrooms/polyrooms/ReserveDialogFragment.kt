@@ -104,6 +104,7 @@ class ReserveDialogFragment : BottomSheetDialogFragment() {
                 prefsEditor?.putString("reservation", json)
                 prefsEditor?.putString("building", buildingNumber)
                 prefsEditor?.putString("room", roomNumber)
+                prefsEditor?.putString("capacity", arguments!!.getString(ARG_CAPACITY))
                 prefsEditor?.apply()
 
                 val intent = Intent(context, MainActivity::class.java)

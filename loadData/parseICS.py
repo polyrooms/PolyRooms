@@ -63,7 +63,7 @@ class room:
         self.roomNumber = roomNumber
 
     def setEmptyIntervals(self, emptyIntervals):
-        self.emptyIntervals = emptyIntervals
+        self.emptyIntervals = emptyIntervals.emptyIntervals
 
 
 # build for 1 ics file
@@ -98,5 +98,6 @@ for index, row in roomDF.iterrows():
     tempRoom.setEmptyIntervals(tempEmptyIntervals)
     tempBuilding.addRoom(tempRoom)
 frozen = jsonpickle.encode(buildingDB, unpicklable=False)
-with open("polyroomsJSON", "w") as f:
+with open("polyrooms.json", "w") as f:
     f.write(frozen)
+    

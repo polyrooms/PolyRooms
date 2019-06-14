@@ -136,6 +136,22 @@ fun TimeIntervalResponse.mapToTimeInterval() : TimeInterval {
     return TimeInterval(start.mapToTime(), finish.mapToTime())
 }
 
+fun inverseIntervals(list : List<TimeIntervalResponse>) : List<TimeIntervalResponse>{
+    val newIntervals = ArrayList<TimeIntervalResponse>()
+
+    var start = TimeResponse(0, 0)
+    for (interval in list) {
+        val finish = interval.start
+        newIntervals.add(TimeIntervalResponse(start, finish))
+
+        start = interval.finish
+    }
+
+    newIntervals.add(TimeIntervalResponse(start, TimeResponse(6, 24)))
+
+    return newIntervals
+}
+
 data class Reservation(val interval : TimeInterval)
 
 fun Reservation.mapToReservationResponse() : ReservationResponse {
@@ -164,7 +180,7 @@ fun queryRoom(buildingNumber : String, roomNumber : String, callback : (Room?) -
                             val roomNumber = roomData.child("roomNumber").value as String
                             val roomCapacity = roomData.child("roomCapacity").value as String
                             val emptyIntervalsData = roomData.child("emptyIntervals")
-                            val emptyIntervals = emptyIntervalsData.children.mapNotNull{it.getValue(TimeIntervalResponse::class.java)}
+                            val emptyIntervals = inverseIntervals(emptyIntervalsData.children.mapNotNull{it.getValue(TimeIntervalResponse::class.java)})
                             val reservationsData = roomData.child("reservations")
                             val reservations = reservationsData.children.mapNotNull{it.getValue(ReservationResponse::class.java)}
                             val roomResponse = RoomResponse(roomNumber, roomCapacity, emptyIntervals, reservations)
@@ -260,7 +276,7 @@ class DataStore : ViewModel(){
                     val roomNumber = roomData.child("roomNumber").value as String
                     val roomCapacity = roomData.child("roomCapacity").value as String
                     val emptyIntervalsData = roomData.child("emptyIntervals")
-                    val emptyIntervals = emptyIntervalsData.children.mapNotNull{it.getValue(TimeIntervalResponse::class.java)}
+                    val emptyIntervals = inverseIntervals(emptyIntervalsData.children.mapNotNull{it.getValue(TimeIntervalResponse::class.java)})
                     println("empty intervals")
                     println(emptyIntervals)
                     val reservationsData = roomData.child("reservations")

@@ -43,7 +43,6 @@ before_script:
   - chmod +x gradlew
 
 script:
-  - ./gradlew clean build
-  - ./gradlew connectedCheck
-  - ./gradlew test
-  - ./gradlew connectedAndroidTest
+  - ./gradlew --warning-mode all clean build
+  - ./gradlew --warning-mode all test
+  - ./gradlew --warning-mode all connectedAndroidTest

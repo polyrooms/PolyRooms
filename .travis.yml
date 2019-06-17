@@ -14,6 +14,7 @@ android:
     - platform-tools
     - tools
     - extra-android-m2repository
+    - sys-img-${ANDROID_ABI}-android-28
     # Additional components
     - extra-google-google_play_services
     - extra-google-m2repository
@@ -42,6 +43,6 @@ before_script:
   - chmod +x gradlew
 
 script:
-  - ./gradlew clean build
-  - ./gradlew test
-
+  - ./gradlew --warning-mode all clean build
+  - ./gradlew --warning-mode all test
+  - ./gradlew --warning-mode all connectedAndroidTest
